@@ -1,17 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Button from './component/Button'
 
 function App() {
   const [tokens, setToken] = useState(null);
-  const handleHelper = (access_token) => {
-    setToken(access_token);
+  const handleHelper = async(access_token) => {
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        setToken(access_token);
+        resolve("5 seconds have passed");
+      }, 5000);
+    });
+    return;
   };
-  
-  console.log("Tokenss", tokens);
+  useEffect(() => {
+    console.log("Token",tokens)
+  },[tokens])
   return (
     <>
-        <Button handler={handleHelper} authOrigin={import.meta.env.VITE_APP_AUTHIFY_IP} text="Sign In with Microsoft" textStyle={{fontSize : "15px"}} id={"45dae2fc-3fab-445d-994d-d80abfd15174"} buttonStyle={{backgroundColor : "black" , height : "50px" , width : "200px"}} />
+        <Button completeLoad={true} handler={handleHelper} authOrigin={import.meta.env.VITE_APP_AUTHIFY_IP} text="Sign In with Microsoft" textStyle={{fontSize : "15px"}} id={"45dae2fc-3fab-445d-994d-d80abfd15174"} buttonStyle={{backgroundColor : "black" , height : "50px" , width : "200px"}} />
       
     </>
   )

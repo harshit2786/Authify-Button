@@ -4,12 +4,17 @@ export const loginWithMicrosoft = async (
       return null;
     },
     setLoader,
-    baseURL
+    baseURL,
+    isLoading,
+    setLoadOnDone
   ) => {
     if (!appId || !baseURL) {
       return;
     }
     setLoader(true);
+    if(isLoading){
+        setLoadOnDone(true);
+    }
     const popup = window.open(
       `${baseURL}/v1/auth?id=${appId}`,
       "popup",
@@ -34,12 +39,14 @@ export const loginWithMicrosoft = async (
     
         try {
           await handleFunc(event.data);
+          setLoadOnDone(false);
         } catch (e) {
           console.error(e);
         } finally {
           if (!popup.closed) {
             popup.close();
           }
+          setLoadOnDone(false);
         }
       });
   };

@@ -7,7 +7,7 @@ const Button = ({
   id,
   handler,
   disabled = false,
-  isLoading = false,
+  completeLoad = false,
   startContent,
   endContent,
   text = "",
@@ -15,30 +15,48 @@ const Button = ({
   buttonClassName = "",
   textClassName = "",
   textStyle = {},
-  authOrigin
+  authOrigin,
 }) => {
+  const [loadOnDone, setLoadOnDone] = useState(false);
   const [loader, setLoader] = useState(false);
   const authHandler = async () => {
-    if (disabled || isLoading || loader || !authOrigin) {
+    if (disabled || loadOnDone || loader || !authOrigin) {
       return;
     }
-    await loginWithMicrosoft(id, handler, setLoader,authOrigin);
+    await loginWithMicrosoft(id, handler, setLoader, authOrigin,completeLoad,setLoadOnDone);
   };
   return (
     <button
-        className={buttonClassName}
-      disabled={disabled || isLoading || loader}
+      className={buttonClassName}
+      disabled={disabled || loadOnDone || loader}
       onClick={authHandler}
-      style={{ display: "flex", alignItems: "center", gap : "8px", justifyContent : (isLoading || loader) ? "center" : "" , cursor : (disabled || isLoading || loader) ? "default" : "pointer" , ...buttonStyle }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        justifyContent: loadOnDone || loader ? "center" : "",
+        cursor: disabled || loadOnDone || loader ? "default" : "pointer",
+        ...buttonStyle,
+      }}
     >
-        {(startContent && !( isLoading || loader) ) && startContent}
-      {isLoading || loader ? (
-        <span className="loader" ></span>
+      {startContent && !(loadOnDone || loader) && startContent}
+      {loadOnDone || loader ? (
+        <span className="loader"></span>
       ) : (
-        <span className={textClassName} style={{flex: '1 1 0%', display:"flex", alignItems : "center", justifyContent :"center" ,...textStyle}} >{text}</span>
+        <span
+          className={textClassName}
+          style={{
+            flex: "1 1 0%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            ...textStyle,
+          }}
+        >
+          {text}
+        </span>
       )}
-      {(endContent && !(isLoading || loader) ) && endContent}
-
+      {endContent && !(loadOnDone || loader) && endContent}
     </button>
   );
 };
